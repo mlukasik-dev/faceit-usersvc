@@ -1,0 +1,121 @@
+syntax = "proto3";
+
+package faceit.usersvc.v1;
+
+option go_package = "github.com/mlukasik-dev/faceit-usersvc/gen/faceit/usersvc/v1";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
+
+// User message is reused in multiple places,
+// so in some contexts some fields are ignored:
+// for instance id is ignored in
+// CreateUserRequest.user and ListUsers.filters.
+message User {
+  string id = 1;
+
+  // first_name should contain only alpha chars.
+  string first_name = 2;
+
+  // last_name should contain only alpha chars.
+  string last_name = 3;
+
+  // nickname should contain only alnum chars and be unique accross all users.
+  string nickname = 4;
+  
+  // email should contain only alnum chars and be unique accross all users.
+  string email = 5;
+
+  // country is not validated, but required during user creation.
+  string country = 6;
+}
+
+// Service contains RPCs for CRUD operations on users and a health check endpoint.
+service Service {
+  // ListUsers returns a paginated list of users, users can be filtered by:
+  // first_name, last_name, nickname, email and country.
+  // In case of invalid params returns: INVALID_ARGUMENT error.
+  rpc ListUsers (ListUsersRequest) returns (ListUsersResponse);
+
+  // GetUser retrieves a user by its id.
+  // When id is invalid returns INVALID_ARGUMENT and
+  // NOT_FOUND error when user with such id doesn't exist.
+  rpc GetUser (GetUserRequest) returns (User);
+
+  // CreateUser creates a user.
+  // When request validation failed returns INVALID_ARGUMENT and
+  // ALREADY_EXISTS error when email or nickname are already taken.
+  rpc CreateUser (CreateUserRequest) returns (User);
+
+  // UpdatePassword takes user's email, old password and new password as params and when user is found and
+  // old password matches database password,
+  // updates it with a new password, otherwise returns respectively NOT_FOUND or PERMISSION_DENIED error
+  // or INVALID_ARGUMENT when email is invalid.
+  rpc UpdatePassword (UpdatePasswordRequest) returns (google.protobuf.Empty);
+
+  // UpdateUser updates user's first_name, last_name nickname, email and country
+  // applying field_mask. User is identified using CreateUserRequest.user.id field.
+  // When id is invalid returns INVALID_ARGUMENT and
+  // NOT_FOUND error when user with such id doesn't exist.
+  rpc UpdateUser (UpdateUserRequest) returns (User);
+
+  // DeleteUser permanently deletes user with a provided id.
+  // Returns INVALID_ARGUMENT in case of invalid id and
+  // NOT_FOUND when user with a gived id doesn't exist.
+  rpc DeleteUser (DeleteUserRequest) returns (google.protobuf.Empty);
+
+  // HealthCheck checks service's health, when db is inavailable returns UNAVAILABLE error.
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+// Pages start from 1 and have a size of size field,
+// empty filters are ignored.
+message ListUsersRequest {
+  int32 page = 1; // Defauls to 1.
+  int32 size = 2; // Defauls to 15.
+  
+  User filters = 3;
+}
+
+// page and size fields are the same as in the request and
+// total field is a total number of matched users.
+message ListUsersResponse {
+  repeated User users = 1;
+  int32 page = 2;
+  int32 size = 3;
+  int64 total = 4;
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+// password is not validated.
+message CreateUserRequest {
+  User user = 1;
+  string password = 2;
+}
+
+message UpdatePasswordRequest {
+  string email = 1;
+  string old_password = 2;
+  string new_password = 3;
+}
+
+// update_mask contains field paths that should be updated.
+// id cannot be in update_mask.
+message UpdateUserRequest {
+  User user = 1;
+  google.protobuf.FieldMask update_mask = 2;
+}
+
+message DeleteUserRequest {
+  string id = 1;
+}
+
+message HealthCheckRequest {
+}
+
+message HealthCheckResponse {
+  string status = 1;
+}

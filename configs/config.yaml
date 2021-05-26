@@ -1,0 +1,3 @@
+port: ${PORT:-8080}
+mongodb:
+  uri: ${MONGODB_URI:?uri was not provided}
