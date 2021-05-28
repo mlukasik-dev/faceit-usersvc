@@ -1,0 +1,14 @@
+name: Tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run integration tests
+        run: make run-integration-tests-ci
