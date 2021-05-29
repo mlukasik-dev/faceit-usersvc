@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package faceit.usersvc.v1;
 
-option go_package = "github.com/mlukasik-dev/faceit-usersvc/gen/faceit/usersvc/v1";
+option go_package = "github.com/mlukasik-dev/faceit-usersvc/gen/faceit/usersvc/v1;usersvcv1";
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/field_mask.proto";

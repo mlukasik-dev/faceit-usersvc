@@ -13,6 +13,10 @@ import (
 	"github.com/mlukasik-dev/faceit-usersvc/internal/controller"
 	"github.com/mlukasik-dev/faceit-usersvc/internal/events"
 	"github.com/mlukasik-dev/faceit-usersvc/internal/store"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readconcern"
+	"go.mongodb.org/mongo-driver/mongo/writeconcern"
 	"go.uber.org/zap"
 )
 
@@ -23,8 +27,9 @@ var (
 		users []*store.User
 	}{
 		[]*store.User{
-			{FirstName: "John", LastName: "Doe", Email: "john.doe7@gmail.com", Country: "UK"},
-			{FirstName: "Jane", LastName: "Doe", Email: "jane.doe7@gmail.com", Country: "UK"},
+			{FirstName: "John", LastName: "Doe", Email: "john.doe@gmail.com", Country: "UK"},
+			{FirstName: "Jane", LastName: "Doe", Email: "jane.doe@gmail.com", Country: "UK"},
+			{FirstName: "Jan", LastName: "Kowalski", Email: "jan.kowalski@gmail.com", Country: "PL"},
 		},
 	}
 )
@@ -66,7 +71,11 @@ func TestMain(m *testing.M) {
 
 	ctr = controller.New(s, logger, e)
 
-	os.Exit(m.Run())
+	code := m.Run()
+
+	unseedDB()
+
+	os.Exit(code)
 }
 
 func seedDB() error {
@@ -80,4 +89,37 @@ func seedDB() error {
 	}
 	testData.users = users
 	return nil
+}
+
+func unseedDB() error {
+	for _, u := range testData.users {
+		err := s.DeleteUser(context.Background(), u.ID)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func idempotent(ctx context.Context, f func(ctx context.Context)) {
+	wc := writeconcern.New(writeconcern.WMajority())
+	rc := readconcern.Snapshot()
+	txnOpts := options.Transaction().SetWriteConcern(wc).SetReadConcern(rc)
+
+	session, err := s.Client().StartSession()
+	if err != nil {
+		panic(err)
+	}
+	defer session.EndSession(context.Background())
+
+	mongo.WithSession(context.Background(), session, func(sessCtx mongo.SessionContext) error {
+		if err = session.StartTransaction(txnOpts); err != nil {
+			panic(err)
+		}
+		f(sessCtx)
+		if err = session.AbortTransaction(sessCtx); err != nil {
+			panic(err)
+		}
+		return nil
+	})
 }

@@ -1,7 +1,7 @@
 package controller
 
-func contains(sl []string, s string) bool {
-	for _, a := range sl {
+func contains(slice []string, s string) bool {
+	for _, a := range slice {
 		if a == s {
 			return true
 		}
