@@ -6,17 +6,11 @@ import (
 	"os"
 	"testing"
 
-	_ "embed"
-
 	usersvcv1 "github.com/mlukasik-dev/faceit-usersvc/gen/go/faceit/usersvc/v1"
 	"github.com/mlukasik-dev/faceit-usersvc/internal/appconfig"
 	"github.com/mlukasik-dev/faceit-usersvc/internal/controller"
 	"github.com/mlukasik-dev/faceit-usersvc/internal/events"
 	"github.com/mlukasik-dev/faceit-usersvc/internal/store"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readconcern"
-	"go.mongodb.org/mongo-driver/mongo/writeconcern"
 	"go.uber.org/zap"
 )
 
@@ -34,11 +28,13 @@ var (
 	}
 )
 
-//go:embed config.yaml
-var configFile []byte
+var testConfig = `
+mongodb:
+  uri: ${MONGODB_URI:?uri was not provided}
+`
 
 func TestMain(m *testing.M) {
-	if err := appconfig.Init(configFile); err != nil {
+	if err := appconfig.Init([]byte(testConfig)); err != nil {
 		log.Fatal(err)
 	}
 
@@ -99,27 +95,4 @@ func unseedDB() error {
 		}
 	}
 	return nil
-}
-
-func idempotent(ctx context.Context, f func(ctx context.Context)) {
-	wc := writeconcern.New(writeconcern.WMajority())
-	rc := readconcern.Snapshot()
-	txnOpts := options.Transaction().SetWriteConcern(wc).SetReadConcern(rc)
-
-	session, err := s.Client().StartSession()
-	if err != nil {
-		panic(err)
-	}
-	defer session.EndSession(context.Background())
-
-	mongo.WithSession(context.Background(), session, func(sessCtx mongo.SessionContext) error {
-		if err = session.StartTransaction(txnOpts); err != nil {
-			panic(err)
-		}
-		f(sessCtx)
-		if err = session.AbortTransaction(sessCtx); err != nil {
-			panic(err)
-		}
-		return nil
-	})
 }

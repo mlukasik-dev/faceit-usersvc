@@ -6,6 +6,7 @@ import (
 
 	usersvcv1 "github.com/mlukasik-dev/faceit-usersvc/gen/go/faceit/usersvc/v1"
 	"github.com/mlukasik-dev/faceit-usersvc/pkg/deref"
+	"github.com/mlukasik-dev/faceit-usersvc/pkg/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -14,14 +15,14 @@ import (
 	"google.golang.org/protobuf/types/known/fieldmaskpb"
 )
 
-func TestRPC_HealthCheck(t *testing.T) {
+func TestServiceServer_HealthCheck(t *testing.T) {
 	req := &usersvcv1.HealthCheckRequest{}
 	res, err := ctr.HealthCheck(context.Background(), req)
 	require.NoError(t, err)
 	assert.Equal(t, "HEALTHY", res.Status)
 }
 
-func TestRPC_ListUsers(t *testing.T) {
+func TestServiceServer_ListUsers(t *testing.T) {
 	t.Run("basic", func(t *testing.T) {
 		req := &usersvcv1.ListUsersRequest{}
 		res, err := ctr.ListUsers(context.Background(), req)
@@ -73,7 +74,7 @@ func TestRPC_ListUsers(t *testing.T) {
 	})
 }
 
-func TestRPC_GetUser(t *testing.T) {
+func TestServiceServer_GetUser(t *testing.T) {
 	t.Run("existing", func(t *testing.T) {
 		user := testData.users[1]
 		req := &usersvcv1.GetUserRequest{Id: user.ID.Hex()}
@@ -95,9 +96,9 @@ func TestRPC_GetUser(t *testing.T) {
 	})
 }
 
-func TestRPC_CreateUser(t *testing.T) {
+func TestServiceServer_CreateUser(t *testing.T) {
 	t.Run("basic", func(t *testing.T) {
-		idempotent(context.Background(), func(ctx context.Context) {
+		testutils.WithAbortedTransaction(context.Background(), s.Client(), func(ctx context.Context) {
 			user := &usersvcv1.User{FirstName: "Mark", LastName: "Brown", Nickname: "mb", Email: "mark.brown@gmail.com", Country: "US"}
 			req := &usersvcv1.CreateUserRequest{User: user, Password: ""}
 			res, err := ctr.CreateUser(ctx, req)
@@ -112,7 +113,7 @@ func TestRPC_CreateUser(t *testing.T) {
 	})
 
 	t.Run("validate", func(t *testing.T) {
-		idempotent(context.Background(), func(ctx context.Context) {
+		testutils.WithAbortedTransaction(context.Background(), s.Client(), func(ctx context.Context) {
 			user := &usersvcv1.User{FirstName: "Mark", LastName: "Brown", Nickname: "#-#", Email: "mark.brown@gmail.com", Country: "US"}
 			req := &usersvcv1.CreateUserRequest{User: user, Password: ""}
 			_, err := ctr.CreateUser(ctx, req)
@@ -122,7 +123,7 @@ func TestRPC_CreateUser(t *testing.T) {
 	})
 
 	t.Run("already exist", func(t *testing.T) {
-		idempotent(context.Background(), func(ctx context.Context) {
+		testutils.WithAbortedTransaction(context.Background(), s.Client(), func(ctx context.Context) {
 			user := &usersvcv1.User{FirstName: "John", LastName: "Doe", Email: "john.doe@gmail.com", Country: "UK"}
 			req := &usersvcv1.CreateUserRequest{User: user, Password: ""}
 			_, err := ctr.CreateUser(ctx, req)
@@ -132,9 +133,9 @@ func TestRPC_CreateUser(t *testing.T) {
 	})
 }
 
-func TestRPC_UpdatePassword(t *testing.T) {
+func TestServiceServer_UpdatePassword(t *testing.T) {
 	t.Run("basic", func(t *testing.T) {
-		idempotent(context.Background(), func(ctx context.Context) {
+		testutils.WithAbortedTransaction(context.Background(), s.Client(), func(ctx context.Context) {
 			req := &usersvcv1.UpdatePasswordRequest{Email: "jane.doe@gmail.com", OldPassword: "123456", NewPassword: "654321"}
 			_, err := ctr.UpdatePassword(ctx, req)
 			require.NoError(t, err)
@@ -151,7 +152,7 @@ func TestRPC_UpdatePassword(t *testing.T) {
 	})
 
 	t.Run("invalid creds", func(t *testing.T) {
-		idempotent(context.Background(), func(ctx context.Context) {
+		testutils.WithAbortedTransaction(context.Background(), s.Client(), func(ctx context.Context) {
 			req := &usersvcv1.UpdatePasswordRequest{Email: "jane.doe@gmail.com", OldPassword: "", NewPassword: "654321"}
 			_, err := ctr.UpdatePassword(ctx, req)
 			require.Error(t, err)
@@ -160,9 +161,9 @@ func TestRPC_UpdatePassword(t *testing.T) {
 	})
 }
 
-func TestRPC_UpdateUser(t *testing.T) {
+func TestServiceServer_UpdateUser(t *testing.T) {
 	t.Run("basic", func(t *testing.T) {
-		idempotent(context.Background(), func(ctx context.Context) {
+		testutils.WithAbortedTransaction(context.Background(), s.Client(), func(ctx context.Context) {
 			user := testData.users[0]
 			pbUser := &usersvcv1.User{Id: user.ID.Hex(), Country: "PL"}
 			um, err := fieldmaskpb.New(pbUser, "country")
@@ -180,9 +181,9 @@ func TestRPC_UpdateUser(t *testing.T) {
 	})
 }
 
-func TestRPC_DeleteUser(t *testing.T) {
+func TestServiceServer_DeleteUser(t *testing.T) {
 	t.Run("existing", func(t *testing.T) {
-		idempotent(context.Background(), func(ctx context.Context) {
+		testutils.WithAbortedTransaction(context.Background(), s.Client(), func(ctx context.Context) {
 			req := &usersvcv1.DeleteUserRequest{Id: testData.users[1].ID.Hex()}
 			_, err := ctr.DeleteUser(ctx, req)
 			require.NoError(t, err)
@@ -195,7 +196,7 @@ func TestRPC_DeleteUser(t *testing.T) {
 	})
 
 	t.Run("not existing", func(t *testing.T) {
-		idempotent(context.Background(), func(ctx context.Context) {
+		testutils.WithAbortedTransaction(context.Background(), s.Client(), func(ctx context.Context) {
 			req := &usersvcv1.DeleteUserRequest{Id: primitive.NewObjectID().Hex()}
 			_, err := ctr.DeleteUser(ctx, req)
 			require.Error(t, err)
