@@ -156,6 +156,9 @@ func (ctr *Ctr) UpdateUser(ctx context.Context, req *usersvcv1.UpdateUserRequest
 	if errors.Is(err, store.ErrNotFound) {
 		return nil, status.Error(codes.NotFound, err.Error())
 	}
+	if errors.Is(err, store.ErrAlreadyExists) {
+		return nil, status.Error(codes.AlreadyExists, err.Error())
+	}
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

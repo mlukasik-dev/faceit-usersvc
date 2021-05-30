@@ -1,7 +1,6 @@
 package store
 
 import (
-	"github.com/gookit/validate"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -9,29 +8,12 @@ import (
 // User is an object reused as CreateUserDTO, UpdateUserDTO and filter for ListUsers,
 // and as a business object representing user resource.
 type User struct {
-	ID             primitive.ObjectID `bson:"_id,omitempty" validate:"-"`
-	FirstName      string             `bson:"firstName" validate:"alpha|required_if:validationKind,create"`
-	LastName       string             `bson:"lastName" validate:"alpha|required_if:validationKind,create"`
-	Nickname       *string            `bson:"nickname" validate:"alphaNum"`
-	Email          string             `bson:"email" validate:"email|required_if:validationKind,create"`
-	Country        string             `bson:"country" validate:"required_if:validationKind,create"`
-	ValidationKind string             `bson:"-"`
-}
-
-const (
-	CreateValidationKind = "create"
-	UpdateValidationKind = "update"
-	FilterValidationKind = "filter"
-)
-
-// Validate validates user according to validation kind.
-func (u *User) Validate(kind string) validate.Errors {
-	u.ValidationKind = kind
-	v := validate.Struct(u)
-	if !v.Validate() {
-		return v.Errors
-	}
-	return nil
+	ID        primitive.ObjectID `bson:"_id,omitempty" validate:"-"`
+	FirstName string             `bson:"firstName" validate:"alpha|required_if:validationKind,create"`
+	LastName  string             `bson:"lastName" validate:"alpha|required_if:validationKind,create"`
+	Nickname  *string            `bson:"nickname" validate:"alphaNum"`
+	Email     string             `bson:"email" validate:"email|required_if:validationKind,create"`
+	Country   string             `bson:"country" validate:"required_if:validationKind,create"`
 }
 
 // SetID parses hex id and sets it on user object.

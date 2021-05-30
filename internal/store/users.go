@@ -3,7 +3,10 @@ package store
 import (
 	"context"
 	"errors"
+	"fmt"
+	"strings"
 
+	"github.com/mlukasik-dev/faceit-usersvc/pkg/deref"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -113,7 +116,18 @@ func (s *Store) matchesPassword(ctx context.Context, email, password string) (bo
 
 func (s *Store) UpdateUser(ctx context.Context, u *User, paths []string) (*User, error) {
 	_, err := s.users.UpdateOne(ctx, bson.D{{Key: "_id", Value: u.ID}}, u.update(paths))
-	// TODO: check for conflics.
+	if mongo.IsDuplicateKeyError(err) {
+		var e mongo.WriteException
+		if errors.As(err, &e) {
+			for _, we := range e.WriteErrors {
+				if strings.Contains(we.Message, "email_1 dup key:") {
+					return nil, fmt.Errorf("user with email '%s' %w", u.Email, ErrAlreadyExists)
+				} else if strings.Contains(we.Message, "nickname_1 dup key:") {
+					return nil, fmt.Errorf("user with nickname '%s' %w", deref.String(u.Nickname), ErrAlreadyExists)
+				}
+			}
+		}
+	}
 	if errors.Is(err, mongo.ErrNoDocuments) {
 		return nil, ErrNotFound
 	}
