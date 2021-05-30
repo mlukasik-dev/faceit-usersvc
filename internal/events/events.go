@@ -6,15 +6,19 @@ const (
 	DeleteUserEvent = "faceit.usersvc.v1.users.delete"
 )
 
+type Client interface {
+	Publish(eventName string, data interface{})
+}
+
 // Here come future dependencies.
-type Client struct {
+type client struct {
 }
 
-func New() *Client {
-	return &Client{}
+func New() *client {
+	return &client{}
 }
 
-func (c *Client) Publish(eventName string, data interface{}) {
+func (c *client) Publish(eventName string, data interface{}) {
 	// TODO: do some stuff here.
 	//
 	// Possible solutions:

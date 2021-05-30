@@ -1,4 +1,5 @@
 version: "3"
+
 services:
   mongo-setup:
     container_name: mongo-setup
@@ -47,8 +48,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.test
-      args:
-        package: ./tests
+    command: ["go", "test", "-v", "-tags=integration", "./..."]
     environment:
       MONGODB_URI: mongodb://mongo1:27017,mongo2:27017,mongo3:27017/usersvcdb?replicaSet=rs0&serverSelectionTimeoutMS=60000
     volumes:

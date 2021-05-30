@@ -1,4 +1,6 @@
-package tests
+// +build integration
+
+package controller_test
 
 import (
 	"context"
@@ -17,6 +19,7 @@ import (
 var (
 	s        *store.Store
 	ctr      usersvcv1.ServiceServer
+	l        *zap.Logger
 	testData = struct {
 		users []*store.User
 	}{
@@ -38,11 +41,12 @@ func TestMain(m *testing.M) {
 		log.Fatal(err)
 	}
 
-	logger, err := zap.NewProduction()
+	var err error
+	l, err = zap.NewProduction()
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer logger.Sync()
+	defer l.Sync()
 
 	client, err := store.Connect(appconfig.AppConfig.Mongodb.URI)
 	if err != nil {
@@ -65,7 +69,7 @@ func TestMain(m *testing.M) {
 
 	e := events.New()
 
-	ctr = controller.New(s, logger, e)
+	ctr = controller.New(s, l, e)
 
 	code := m.Run()
 

@@ -1,8 +1,3 @@
 FROM golang:1.16-buster
 
 WORKDIR /app
-
-ARG package
-ENV package=$package
-
-CMD "go" "test" "-v" "$package"

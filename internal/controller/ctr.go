@@ -18,10 +18,10 @@ import (
 type Ctr struct {
 	store  *store.Store
 	logger *zap.Logger
-	events *events.Client
+	events events.Client
 }
 
-func New(s *store.Store, l *zap.Logger, e *events.Client) usersvcv1.ServiceServer {
+func New(s *store.Store, l *zap.Logger, e events.Client) usersvcv1.ServiceServer {
 	return &Ctr{s, l, e}
 }
 
