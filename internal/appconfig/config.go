@@ -13,11 +13,11 @@ type Config struct {
 	}
 }
 
+// AppConfig contains application configuration.
 var AppConfig Config
 
-func Init(configFile []byte) error {
-	if err := config.Load(bytes.NewReader(configFile), &AppConfig, "yaml"); err != nil {
-		return err
-	}
-	return nil
+// Init takes configuration file content in yaml format,
+// parses it and initilizes appconfig.AppConfig struct.
+func Init(cfg []byte) error {
+	return config.Load(bytes.NewReader(cfg), &AppConfig, "yaml")
 }
