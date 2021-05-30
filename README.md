@@ -45,4 +45,3 @@ For endpoints documentation see [protobuf definition file](/faceit/usersvc/v1/pr
 3. **Extract code from controllers into services**: for cleaner architecture.
 4. **Add sorting and searching functionality for Service.ListUsers RPC**.
 5. **Setup error reporting**: can be with [Cloud Error Reporting](https://cloud.google.com/error-reporting).
-6. Add some unit and e2e tests.
