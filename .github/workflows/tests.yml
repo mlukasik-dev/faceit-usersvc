@@ -10,5 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Run unit tests
+        run: make run-unit-tests
+
       - name: Run integration tests
         run: make run-integration-tests-ci
