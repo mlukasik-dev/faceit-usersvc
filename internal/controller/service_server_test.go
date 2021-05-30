@@ -201,6 +201,23 @@ func TestServiceServer_UpdateUser(t *testing.T) {
 			assert.Equal(t, res.Country, "PL")
 		})
 	})
+
+	t.Run("conflict", func(t *testing.T) {
+		user := testData.users[0]
+		e := &events.Mock{}
+		ctr := controller.New(s, l, e)
+
+		testutils.WithAbortedTransaction(context.Background(), s.Client(), func(ctx context.Context) {
+			pbUser := &usersvcv1.User{Id: user.ID.Hex(), Email: "jan.kowalski@gmail.com"}
+			um, err := fieldmaskpb.New(pbUser, "email")
+			require.NoError(t, err)
+			req := &usersvcv1.UpdateUserRequest{User: pbUser, UpdateMask: um}
+			_, err = ctr.UpdateUser(ctx, req)
+			e.AssertNotCalled(t, "Publish")
+			require.Error(t, err)
+			assert.Equal(t, status.Convert(err).Code(), codes.AlreadyExists)
+		})
+	})
 }
 
 func TestServiceServer_DeleteUser(t *testing.T) {
