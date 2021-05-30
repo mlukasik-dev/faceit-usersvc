@@ -1,3 +1,6 @@
+run-unit-tests:
+	go test -v -tags=unit ./...
+
 run-integration-tests-ci:
 	docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit integration-tests
 
