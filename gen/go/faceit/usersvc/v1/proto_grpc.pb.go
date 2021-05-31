@@ -39,7 +39,8 @@ type ServiceClient interface {
 	// UpdateUser updates user's first_name, last_name nickname, email and country
 	// applying field_mask. User is identified using CreateUserRequest.user.id field.
 	// When id is invalid returns INVALID_ARGUMENT and
-	// NOT_FOUND error when user with such id doesn't exist.
+	// NOT_FOUND error when user with such id doesn't exist,
+	// and ALREADY_EXISTS error when there a conflict (email or nickname were already taken).
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*User, error)
 	// DeleteUser permanently deletes user with a provided id.
 	// Returns INVALID_ARGUMENT in case of invalid id and
@@ -144,7 +145,8 @@ type ServiceServer interface {
 	// UpdateUser updates user's first_name, last_name nickname, email and country
 	// applying field_mask. User is identified using CreateUserRequest.user.id field.
 	// When id is invalid returns INVALID_ARGUMENT and
-	// NOT_FOUND error when user with such id doesn't exist.
+	// NOT_FOUND error when user with such id doesn't exist,
+	// and ALREADY_EXISTS error when there a conflict (email or nickname were already taken).
 	UpdateUser(context.Context, *UpdateUserRequest) (*User, error)
 	// DeleteUser permanently deletes user with a provided id.
 	// Returns INVALID_ARGUMENT in case of invalid id and

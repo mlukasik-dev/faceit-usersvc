@@ -1,3 +1,7 @@
+gen:
+	buf generate
+.PHONY: gen
+
 run-unit-tests:
 	go test -v -tags=unit ./...
 

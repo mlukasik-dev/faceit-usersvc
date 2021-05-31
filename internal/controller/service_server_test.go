@@ -27,6 +27,7 @@ func TestServiceServer_HealthCheck(t *testing.T) {
 }
 
 func TestServiceServer_ListUsers(t *testing.T) {
+	// Use default values for pagination.
 	t.Run("basic", func(t *testing.T) {
 		req := &usersvcv1.ListUsersRequest{}
 		res, err := ctr.ListUsers(context.Background(), req)
@@ -38,6 +39,7 @@ func TestServiceServer_ListUsers(t *testing.T) {
 	})
 
 	t.Run("paginate", func(t *testing.T) {
+		// Skip first 2 of total 3 test users.
 		req := &usersvcv1.ListUsersRequest{Page: 2, Size: 2}
 		res, err := ctr.ListUsers(context.Background(), req)
 		require.NoError(t, err)
@@ -48,6 +50,7 @@ func TestServiceServer_ListUsers(t *testing.T) {
 	})
 
 	t.Run("filter", func(t *testing.T) {
+		// Query John Doe and Jane Doe by their surname.
 		req := &usersvcv1.ListUsersRequest{Filters: &usersvcv1.User{LastName: "Doe"}}
 		res, err := ctr.ListUsers(context.Background(), req)
 		require.NoError(t, err)
@@ -203,6 +206,7 @@ func TestServiceServer_UpdateUser(t *testing.T) {
 	})
 
 	t.Run("conflict", func(t *testing.T) {
+		// Try to change user's email to email of an existing user.
 		user := testData.users[0]
 		e := &events.Mock{}
 		ctr := controller.New(s, l, e)
