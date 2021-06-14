@@ -60,7 +60,7 @@ func NewServiceClient(cc grpc.ClientConnInterface) ServiceClient {
 
 func (c *serviceClient) ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error) {
 	out := new(ListUsersResponse)
-	err := c.cc.Invoke(ctx, "/faceit.usersvc.v1.Service/ListUsers", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/usersvc.v1.Service/ListUsers", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func (c *serviceClient) ListUsers(ctx context.Context, in *ListUsersRequest, opt
 
 func (c *serviceClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
-	err := c.cc.Invoke(ctx, "/faceit.usersvc.v1.Service/GetUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/usersvc.v1.Service/GetUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func (c *serviceClient) GetUser(ctx context.Context, in *GetUserRequest, opts ..
 
 func (c *serviceClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
-	err := c.cc.Invoke(ctx, "/faceit.usersvc.v1.Service/CreateUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/usersvc.v1.Service/CreateUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +87,7 @@ func (c *serviceClient) CreateUser(ctx context.Context, in *CreateUserRequest, o
 
 func (c *serviceClient) UpdatePassword(ctx context.Context, in *UpdatePasswordRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/faceit.usersvc.v1.Service/UpdatePassword", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/usersvc.v1.Service/UpdatePassword", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +96,7 @@ func (c *serviceClient) UpdatePassword(ctx context.Context, in *UpdatePasswordRe
 
 func (c *serviceClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
-	err := c.cc.Invoke(ctx, "/faceit.usersvc.v1.Service/UpdateUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/usersvc.v1.Service/UpdateUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +105,7 @@ func (c *serviceClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, o
 
 func (c *serviceClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/faceit.usersvc.v1.Service/DeleteUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/usersvc.v1.Service/DeleteUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +114,7 @@ func (c *serviceClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, o
 
 func (c *serviceClient) HealthCheck(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (*HealthCheckResponse, error) {
 	out := new(HealthCheckResponse)
-	err := c.cc.Invoke(ctx, "/faceit.usersvc.v1.Service/HealthCheck", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/usersvc.v1.Service/HealthCheck", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -203,7 +203,7 @@ func _Service_ListUsers_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/faceit.usersvc.v1.Service/ListUsers",
+		FullMethod: "/usersvc.v1.Service/ListUsers",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ServiceServer).ListUsers(ctx, req.(*ListUsersRequest))
@@ -221,7 +221,7 @@ func _Service_GetUser_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/faceit.usersvc.v1.Service/GetUser",
+		FullMethod: "/usersvc.v1.Service/GetUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ServiceServer).GetUser(ctx, req.(*GetUserRequest))
@@ -239,7 +239,7 @@ func _Service_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/faceit.usersvc.v1.Service/CreateUser",
+		FullMethod: "/usersvc.v1.Service/CreateUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ServiceServer).CreateUser(ctx, req.(*CreateUserRequest))
@@ -257,7 +257,7 @@ func _Service_UpdatePassword_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/faceit.usersvc.v1.Service/UpdatePassword",
+		FullMethod: "/usersvc.v1.Service/UpdatePassword",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ServiceServer).UpdatePassword(ctx, req.(*UpdatePasswordRequest))
@@ -275,7 +275,7 @@ func _Service_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/faceit.usersvc.v1.Service/UpdateUser",
+		FullMethod: "/usersvc.v1.Service/UpdateUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ServiceServer).UpdateUser(ctx, req.(*UpdateUserRequest))
@@ -293,7 +293,7 @@ func _Service_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/faceit.usersvc.v1.Service/DeleteUser",
+		FullMethod: "/usersvc.v1.Service/DeleteUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ServiceServer).DeleteUser(ctx, req.(*DeleteUserRequest))
@@ -311,7 +311,7 @@ func _Service_HealthCheck_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/faceit.usersvc.v1.Service/HealthCheck",
+		FullMethod: "/usersvc.v1.Service/HealthCheck",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ServiceServer).HealthCheck(ctx, req.(*HealthCheckRequest))
@@ -323,7 +323,7 @@ func _Service_HealthCheck_Handler(srv interface{}, ctx context.Context, dec func
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Service_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "faceit.usersvc.v1.Service",
+	ServiceName: "usersvc.v1.Service",
 	HandlerType: (*ServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -356,5 +356,5 @@ var Service_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "faceit/usersvc/v1/proto.proto",
+	Metadata: "usersvc/v1/proto.proto",
 }

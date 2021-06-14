@@ -5,7 +5,7 @@ package store
 import (
 	"testing"
 
-	"github.com/mlukasik-dev/faceit-usersvc/pkg/deref"
+	"github.com/mlukasik-dev/usersvc/pkg/deref"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

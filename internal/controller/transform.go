@@ -1,9 +1,9 @@
 package controller
 
 import (
-	usersvcv1 "github.com/mlukasik-dev/faceit-usersvc/gen/go/faceit/usersvc/v1"
-	"github.com/mlukasik-dev/faceit-usersvc/internal/store"
-	"github.com/mlukasik-dev/faceit-usersvc/pkg/deref"
+	usersvcv1 "github.com/mlukasik-dev/usersvc/gen/go/usersvc/v1"
+	"github.com/mlukasik-dev/usersvc/internal/store"
+	"github.com/mlukasik-dev/usersvc/pkg/deref"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 

@@ -8,11 +8,11 @@ import (
 	"os"
 	"testing"
 
-	usersvcv1 "github.com/mlukasik-dev/faceit-usersvc/gen/go/faceit/usersvc/v1"
-	"github.com/mlukasik-dev/faceit-usersvc/internal/appconfig"
-	"github.com/mlukasik-dev/faceit-usersvc/internal/controller"
-	"github.com/mlukasik-dev/faceit-usersvc/internal/events"
-	"github.com/mlukasik-dev/faceit-usersvc/internal/store"
+	usersvcv1 "github.com/mlukasik-dev/usersvc/gen/go/usersvc/v1"
+	"github.com/mlukasik-dev/usersvc/internal/appconfig"
+	"github.com/mlukasik-dev/usersvc/internal/controller"
+	"github.com/mlukasik-dev/usersvc/internal/events"
+	"github.com/mlukasik-dev/usersvc/internal/store"
 	"go.uber.org/zap"
 )
 

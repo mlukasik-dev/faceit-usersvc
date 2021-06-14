@@ -5,9 +5,9 @@ import (
 	"errors"
 
 	"github.com/gookit/validate"
-	usersvcv1 "github.com/mlukasik-dev/faceit-usersvc/gen/go/faceit/usersvc/v1"
-	"github.com/mlukasik-dev/faceit-usersvc/internal/events"
-	"github.com/mlukasik-dev/faceit-usersvc/internal/store"
+	usersvcv1 "github.com/mlukasik-dev/usersvc/gen/go/usersvc/v1"
+	"github.com/mlukasik-dev/usersvc/internal/events"
+	"github.com/mlukasik-dev/usersvc/internal/store"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"

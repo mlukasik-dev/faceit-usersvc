@@ -1,4 +1,4 @@
-module github.com/mlukasik-dev/faceit-usersvc
+module github.com/mlukasik-dev/usersvc
 
 go 1.16
 

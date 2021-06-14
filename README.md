@@ -17,7 +17,7 @@
 ## Testing
 
 Endpoints can be tested with [evans-cli](https://github.com/ktr0731/evans) or [bloomrpc](https://github.com/uw-labs/bloomrpc).  
-For endpoints documentation see [protobuf definition file](/faceit/usersvc/v1/proto.proto).
+For endpoints documentation see [protobuf definition file](/usersvc/v1/proto.proto).
 
 ## Assumptions
 
@@ -35,7 +35,7 @@ For endpoints documentation see [protobuf definition file](/faceit/usersvc/v1/pr
 
 1. For configuration I've used [package](https://github.com/gopher-lib/config) which I developed and open-sourced a few months ago.
 2. Reusage of protobuf message in the Spirit of [Google Cloud API Design Guide](https://cloud.google.com/apis/design).
-3. Having [protobuf definition file](/faceit/usersvc/v1/proto.proto) as a source of documentation.
+3. Having [protobuf definition file](/usersvc/v1/proto.proto) as a source of documentation.
 
 ## Possible extensions and improvements
 

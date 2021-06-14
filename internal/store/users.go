@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/mlukasik-dev/faceit-usersvc/pkg/deref"
+	"github.com/mlukasik-dev/usersvc/pkg/deref"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
